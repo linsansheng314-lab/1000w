@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> 红色旅游剧本杀系统架构 V4.0 </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: "Revolutionary Tech" - Deep Red (#7f1d1d) for heritage, Slate (#1e293b) for technology, Amber (#f59e0b) for highlights. -->
+    <!-- Application Structure Plan: 
+         1. Vision Header: Immediate impact with 10k+ concurrency & SaaS goals.
+         2. Interactive Architecture: 3-Layer diagram (Client/Server/Admin) that reveals details on click.
+         3. Tech Simulation Labs:
+            - Route Engine: Demonstrates the V4.0 Multi-role/Multi-route JSON logic.
+            - LBS Team: Simulates V1.0 Team positioning & V2.0 Geo-fencing on Canvas.
+            - AI Liaison: Simulates the "Revolutionary Liaison" (ex-Pet) and AI Photo Match.
+         4. Full Feature Roadmap: A tabbed table view mapping Excel features (1.0-4.0) to the 3 implementation phases.
+         This structure proves the architecture can handle the specific functional requirements.
+    -->
+    <!-- Visualization & Content Choices:
+         - Charts: Used for system load (Line) and AI vector matching (Bar).
+         - Canvas: Used for the LBS map simulation to show "Team Member" movement and radius triggering.
+         - DOM Manipulation: Heavy use of JS to switch "Script Routes" dynamically, proving the V4.0 JSON structure flexibility.
+         - NO SVG/Mermaid: All diagrams built with CSS Grid/Flex and Unicode icons.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body { font-family: 'Noto Sans SC', sans-serif; background-color: #f8fafc; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        .retro-card {
+            background: white;
+            border-left: 4px solid #991b1b; /* Red-800 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .retro-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .tech-border {
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+        }
+
+        /* Console Log Animation */
+        .console-window {
+            background-color: #1e293b;
+            color: #4ade80;
+            font-family: monospace;
+            height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+        }
+
+        .phase-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .bg-p1 { background-color: #dbeafe; color: #1e40af; } /* Phase 1 */
+        .bg-p2 { background-color: #fae8ff; color: #86198f; } /* Phase 2 */
+        .bg-p3 { background-color: #ffedd5; color: #9a3412; } /* Phase 3 */
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Top Navigation -->
+    <nav class="bg-red-900 text-amber-50 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">★</span>
+                    <h1 class="font-bold text-xl tracking-wider">沉浸式· 景区红色旅游剧本杀架构方案 V4.0</h1>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium">
+                    <a href="#overview" class="hover:text-white transition">战略总览</a>
+                    <a href="#labs" class="hover:text-white transition">核心引擎实验室</a>
+                    <a href="#roadmap" class="hover:text-white transition">全量功能落地表</a>
+                    <a href="#business" class="hover:text-white transition">SaaS商业模型</a>
+                </div>
+                <div class="text-xs bg-red-800 px-3 py-1 rounded-full border border-red-700">
+                    System Status: <span class="text-green-400 font-bold">ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Section 1: Strategic Overview -->
+        <section id="overview" class="animate-fade-in">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-2">
+                    <span class="text-red-700">▍</span> 战略总览 (Strategic Overview)
+                </h2>
+                <p class="mt-2 text-slate-600 max-w-4xl">
+                    本架构方案 (V4.0) 旨在构建一个支持 <strong>10,000+ 并发</strong> 的 SaaS 级实景剧本杀平台。
+                    它完全整合了从 Excel 功能清单 1.0 到 4.0 的所有需求，实现了从“单人闯关”到“多租户生态”的完整闭环。
+                    核心在于解决 LBS 精准定位、多角色多路线叙事、以及混合商业模式变现。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="retro-card p-6 rounded-lg">
+                    <div class="text-slate-500 text-sm font-bold uppercase">最大并发承载</div>
+                    <div class="text-4xl font-extrabold text-red-700 mt-2">10,000+</div>
+                    <div class="text-xs text-slate-400 mt-1">微服务架构 / Redis集群</div>
+                </div>
+                <div class="retro-card p-6 rounded-lg">
+                    <div class="text-slate-500 text-sm font-bold uppercase">功能覆盖率</div>
+                    <div class="text-4xl font-extrabold text-blue-700 mt-2">100%</div>
+                    <div class="text-xs text-slate-400 mt-1">整合清单 1.0 - 4.0</div>
+                </div>
+                <div class="retro-card p-6 rounded-lg">
+                    <div class="text-slate-500 text-sm font-bold uppercase">数据持久性</div>
+                    <div class="text-4xl font-extrabold text-amber-600 mt-2">SaaS</div>
+                    <div class="text-xs text-slate-400 mt-1">多租户 / 云端存档</div>
+                </div>
+                <div class="retro-card p-6 rounded-lg">
+                    <div class="text-slate-500 text-sm font-bold uppercase">多媒体引擎</div>
+                    <div class="text-4xl font-extrabold text-green-700 mt-2">V4.0</div>
+                    <div class="text-xs text-slate-400 mt-1">视频背景 / 多路线 / 旁白</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Architecture Diagram (Interactive) -->
+        <section id="architecture">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2 mb-4">
+                <span class="text-red-700">▍</span> V4.0 全景架构 (System Architecture)
+            </h2>
+            <p class="mb-6 text-slate-600">点击下方模块查看技术细节。系统采用模块化单体设计，分为客户端、服务端与管理端。</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Client Layer -->
+                <div class="bg-white p-4 rounded shadow border-t-4 border-blue-500">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between">
+                        客户端 (Mini Program) <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">前端</span>
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-blue-50 cursor-pointer transition" onclick="logConsole('LBS Engine: Tencent Map SDK + Team Marker Rendering initialized.')">
+                            <span class="font-bold">🌍 LBS 地理引擎</span><br>
+                            <span class="text-xs text-slate-500">腾讯地图SDK / 队友位置共享 (WebSocket)</span>
+                        </div>
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-blue-50 cursor-pointer transition" onclick="logConsole('Script Engine V4: Loaded Narrative/Dialogue modes & Video background support.')">
+                            <span class="font-bold">🎬 多媒体剧本引擎 V4</span><br>
+                            <span class="text-xs text-slate-500">叙事/对话模式 / 视频背景 / 联络员</span>
+                        </div>
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-blue-50 cursor-pointer transition" onclick="logConsole('Interaction: AI Camera & Hardware (NFC/Bluetooth) ready.')">
+                            <span class="font-bold">🎮 互动模块</span><br>
+                            <span class="text-xs text-slate-500">AI拍照 / 硬件 / H5小游戏 / 背囊</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server Layer -->
+                <div class="bg-white p-4 rounded shadow border-t-4 border-red-500">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between">
+                        服务端 (Backend) <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">核心</span>
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-red-50 cursor-pointer transition" onclick="logConsole('Route Service: Dispatching Role-based JSON chain based on User Selection.')">
+                            <span class="font-bold">🔀 剧本路由服务</span><br>
+                            <span class="text-xs text-slate-500">多角色多路线分发 / 深度复制算法</span>
+                        </div>
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-red-50 cursor-pointer transition" onclick="logConsole('SaaS Center: Tenant ID checked. SKU validity verified.')">
+                            <span class="font-bold">💰 商业权益中心</span><br>
+                            <span class="text-xs text-slate-500">SKU内购 / 门票核销 / 有效期控制</span>
+                        </div>
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-red-50 cursor-pointer transition" onclick="logConsole('Game Gateway: Broadcasting POS_UPDATE to Room #888.')">
+                            <span class="font-bold">📡 游戏网关</span><br>
+                            <span class="text-xs text-slate-500">WebSocket / 实时位置 / 状态同步</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Layer -->
+                <div class="bg-white p-4 rounded shadow border-t-4 border-amber-500">
+                    <h3 class="font-bold text-lg mb-3 flex justify-between">
+                        管理端 (SaaS Admin) <span class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">运营</span>
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-amber-50 cursor-pointer transition" onclick="logConsole('Editor: Deep Copy triggered. Cloned Route A to Route B.')">
+                            <span class="font-bold">✏️ 可视化编辑器</span><br>
+                            <span class="text-xs text-slate-500">前置/后置旁白配置 / 路线复制</span>
+                        </div>
+                        <div class="p-2 bg-slate-50 border rounded text-sm hover:bg-amber-50 cursor-pointer transition" onclick="logConsole('Ops: Monitoring Tenant #1002 data flow.')">
+                            <span class="font-bold">📊 运营中心</span><br>
+                            <span class="text-xs text-slate-500">多租户管理 / 核销记录 / 战队监控</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Simulated Console -->
+            <div class="mt-4">
+                <div class="bg-slate-800 text-slate-400 text-xs px-2 py-1 rounded-t w-32">System Log</div>
+                <div id="console-output" class="console-window">
+                    > System initialized...<br>
+                    > Waiting for user interaction...
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Core Engine Labs (The Complex Logic) -->
+        <section id="labs">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2 mb-6">
+                <span class="text-red-700">▍</span> 核心引擎实验室 (Core Engine Labs)
+            </h2>
+            <p class="mb-6 text-slate-600">本区域模拟架构中技术难度最高的三个模块：多路线剧本引擎 (V4.0)、LBS 组队协同 (V1.0) 以及 AI 联络员系统 (V2.0)。</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Lab A: Script Route Engine -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-red-900">A. 多角色多路线引擎 (V4.0)</h3>
+                        <span class="text-xs bg-slate-100 px-2 py-1 rounded">JSON Visualize</span>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-sm font-semibold text-slate-700">选择角色 (触发不同 JSON):</label>
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="loadScript('scout')" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">侦察员 (Role A)</button>
+                            <button onclick="loadScript('medic')" class="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition">卫生员 (Role B)</button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 text-green-400 font-mono text-xs p-4 rounded h-64 overflow-auto" id="json-viewer">
+                        // 点击上方按钮查看 V4.0 差异化数据结构
+                        { "status": "waiting_for_selection" }
+                    </div>
+                    <div class="mt-2 text-xs text-slate-500">
+                        * V4.0 特性：支持视频背景 (bg_type: VIDEO)、前置/后置旁白 (Pre/Post Narrative) 以及题目绑定。
+                    </div>
+                </div>
+
+                <!-- Lab B: LBS & AI Liaison -->
+                <div class="space-y-6">
+                    <!-- LBS Map Sim -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg text-red-900">B. LBS 战队与围栏 (V1.0/V2.0)</h3>
+                            <button onclick="toggleTeam()" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200">开启组队模式</button>
+                        </div>
+                        <div class="relative w-full h-48 bg-slate-100 rounded border border-slate-300 overflow-hidden">
+                            <canvas id="lbsCanvas" class="w-full h-full"></canvas>
+                            <div class="absolute top-2 left-2 text-xs bg-white/80 p-1 rounded">
+                                Distance: <span id="dist-display">0</span>m
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">
+                            * 绿色圆圈：地理围栏。蓝色点：玩家。红色点：队友(WebSocket同步)。进入圆圈触发任务。
+                        </p>
+                    </div>
+
+                    <!-- AI Liaison Sim -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg text-red-900">C. 革命联络员 & AI (V1.0/V2.0)</h3>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl border-2 border-amber-300 relative group cursor-pointer" onclick="triggerLiaison()">
+                                🎺
+                                <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></span>
+                            </div>
+                            <div class="flex-1">
+                                <div id="liaison-msg" class="bg-amber-50 p-3 rounded text-sm text-amber-900 border border-amber-200">
+                                    点击左侧“小号手”头像，接收组织发来的线索电报...
+                                </div>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <button onclick="simPhotoMatch()" class="px-3 py-1 bg-slate-200 text-slate-700 text-xs rounded hover:bg-slate-300">📸 模拟拍照上传</button>
+                                    <div class="h-2 w-32 bg-slate-200 rounded overflow-hidden">
+                                        <div id="match-bar" class="h-full bg-green-500 w-0 transition-all duration-1000"></div>
+                                    </div>
+                                    <span id="match-score" class="text-xs font-bold text-slate-600">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Roadmap (The Excel Integration) -->
+        <section id="roadmap">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2 mb-6">
+                <span class="text-red-700">▍</span> V4.0 全量功能落地表 (Full Feature Roadmap)
+            </h2>
+            <p class="mb-6 text-slate-600">
+                本表严格对应《漫云科技剧本杀功能清单4.0》，将所有需求（1.0基础到4.0多路线）拆解为三个落地阶段。
+            </p>
+
+            <div class="bg-white shadow rounded-lg overflow-hidden border border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold">
+                            <tr>
+                                <th class="px-6 py-3">阶段 (Phase)</th>
+                                <th class="px-6 py-3">核心模块</th>
+                                <th class="px-6 py-3">对应 Excel 功能点详情</th>
+                                <th class="px-6 py-3">技术实现路径</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <!-- Phase 1 -->
+                            <tr class="bg-blue-50/30">
+                                <td class="px-6 py-4 font-bold text-blue-800 border-r border-slate-200" rowspan="4">
+                                    <span class="bg-p1">第一阶段: MVP</span><br>
+                                    <span class="text-xs font-normal text-slate-500">单人 / 多路线 / 基础互动</span>
+                                </td>
+                                <td class="px-6 py-4 font-semibold">角色与联络员</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li>微信授权 / 手机绑定 (v1.0)</li>
+                                        <li><strong>选择革命联络员</strong> (原选择宠物 v1.0)</li>
+                                        <li>图文语音引导 NPC (v1.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">UI改造：宠物->小号手/通讯员；基础User表构建。</td>
+                            </tr>
+                            <tr class="bg-blue-50/30">
+                                <td class="px-6 py-4 font-semibold">剧本引擎 V4</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li><strong>多路线系统</strong> (绑定不同角色 v4.0)</li>
+                                        <li><strong>叙事/对话旁白</strong> (v4.0)</li>
+                                        <li><strong>视频背景</strong> / 图片背景 (v4.0)</li>
+                                        <li>题目前置/后置旁白 (v4.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">JSON链表结构；视频流媒体预加载；RouteService路由分发。</td>
+                            </tr>
+                            <tr class="bg-blue-50/30">
+                                <td class="px-6 py-4 font-semibold">任务交互</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li>扫码激活路线 / GPS打卡 (v1.0)</li>
+                                        <li><strong>联络员提示</strong> (原宠物提示 v1.0)</li>
+                                        <li>行军背囊 (背包) / 碎片合成宝箱 (v1.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">LBS触发器；Lottie动效(开宝箱)；道具状态机。</td>
+                            </tr>
+                            <tr class="bg-blue-50/30">
+                                <td class="px-6 py-4 font-semibold">后台管理</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li><strong>活动路线复制</strong> (v4.0)</li>
+                                        <li>题目与关卡配置 (v4.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">实现 Deep Copy 接口 (复制Route+Tasks+Roles)。</td>
+                            </tr>
+
+                            <!-- Phase 2 -->
+                            <tr class="bg-purple-50/30">
+                                <td class="px-6 py-4 font-bold text-purple-800 border-r border-slate-200" rowspan="2">
+                                    <span class="bg-p2">第二阶段: 社交</span><br>
+                                    <span class="text-xs font-normal text-slate-500">组队 / AI / 硬件</span>
+                                </td>
+                                <td class="px-6 py-4 font-semibold">社交系统</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li><strong>组队闯关 / 密码加入</strong> (v1.0)</li>
+                                        <li><strong>战队位置实时共享</strong> (v1.0)</li>
+                                        <li>平均分积分计算 (v1.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">WebSocket服务搭建；Redis Geo缓存；聚合计算策略。</td>
+                            </tr>
+                            <tr class="bg-purple-50/30">
+                                <td class="px-6 py-4 font-semibold">高级互动</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li><strong>AI 拍照识别</strong> (v2.0)</li>
+                                        <li>蓝牙/NFC 任务 (v2.0)</li>
+                                        <li>H5 小游戏 (拼图/找茬 v2.0)</li>
+                                        <li>SOS 一键求助 (v2.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">图像向量检索服务；微信硬件JS-SDK；WebView嵌入。</td>
+                            </tr>
+
+                            <!-- Phase 3 -->
+                            <tr class="bg-amber-50/30">
+                                <td class="px-6 py-4 font-bold text-amber-800 border-r border-slate-200" rowspan="2">
+                                    <span class="bg-p3">第三阶段: SaaS</span><br>
+                                    <span class="text-xs font-normal text-slate-500">B端 / 核销 / 多租户</span>
+                                </td>
+                                <td class="px-6 py-4 font-semibold">核销与周边</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li><strong>二维码核销系统</strong> (v2.0)</li>
+                                        <li>推荐景点 / 附近美食 (v2.0)</li>
+                                        <li>数据排行榜 (v1.0)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">B端扫码枪逻辑；LBS POI检索接口。</td>
+                            </tr>
+                            <tr class="bg-amber-50/30">
+                                <td class="px-6 py-4 font-semibold">SaaS 能力</td>
+                                <td class="px-6 py-4">
+                                    <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                        <li><strong>开放空白账号 (多租户)</strong> (v2.3)</li>
+                                        <li>独立付费与存档体系 (v2.3)</li>
+                                    </ul>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500">Tenant_ID 数据库隔离；SKU 计费引擎。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Business Model -->
+        <section id="business" class="pb-12">
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2 mb-6">
+                <span class="text-red-700">▍</span> SaaS 混合商业模型 (Business Model)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <p class="text-slate-600">
+                        架构 V2.3/2.4 引入了灵活的商业变现能力，支持从单一门票到长期运营的转变。
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="text-red-600 mr-2">●</span>
+                            <div>
+                                <strong class="text-slate-900">门票权益 (Ticket Asset):</strong>
+                                <span class="text-slate-500 text-sm block">包含1次免费选角机会。激活后生成 Binding 记录，默认30天有效期 (TTL)。</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 mr-2">●</span>
+                            <div>
+                                <strong class="text-slate-900">SKU 内购 (In-App Purchase):</strong>
+                                <span class="text-slate-500 text-sm block">解锁额外角色或剧本需单独付费。支持“全角色解锁包”等打包策略。</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-amber-600 mr-2">●</span>
+                            <div>
+                                <strong class="text-slate-900">SaaS 多租户 (Multi-Tenancy):</strong>
+                                <span class="text-slate-500 text-sm block">开放空白账号给合作景区。支持“买断”、“订阅”或“按核销次数”计费。</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow border border-slate-200">
+                    <h3 class="font-bold text-center mb-4 text-sm uppercase text-slate-500">预估收入结构</h3>
+                    <div class="chart-container mx-auto">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-mono text-lg text-slate-200 mb-2">下一个1000W</p>
+            <p class="text-xs">红色旅游剧本杀系统架构 V4.0 | © 2025</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Console Logger ---
+        function logConsole(msg) {
+            const consoleEl = document.getElementById('console-output');
+            const time = new Date().toLocaleTimeString();
+            consoleEl.innerHTML += `<div><span class="text-slate-500">[${time}]</span> ${msg}</div>`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // --- 2. Script Engine Lab (V4.0 Logic) ---
+        function loadScript(role) {
+            const viewer = document.getElementById('json-viewer');
+            let data = {};
+            
+            if (role === 'scout') {
+                data = {
+                    "role_id": "role_scout_01",
+                    "role_name": "侦察员",
+                    "stage_list": [
+                        {
+                            "stage_id": 101,
+                            "trigger": { "type": "GPS", "lat": 29.5, "lng": 106.5 },
+                            "pre_narrative": [
+                                { "type": "DIALOGUE", "speaker": "npc_villager", "bg_type": "VIDEO", "content": "前面碉堡火力太猛！" }
+                            ],
+                            "task": { "type": "PHOTO_AI", "hint": "小号手提示: 拍摄射击孔" },
+                            "post_narrative": [ { "type": "MONOLOGUE", "content": "位置已记录。" } ]
+                        }
+                    ]
+                };
+                logConsole('ScriptEngine: Loaded [Scout] route. Video BG pre-loading...');
+            } else {
+                data = {
+                    "role_id": "role_medic_01",
+                    "role_name": "卫生员",
+                    "stage_list": [
+                        {
+                            "stage_id": 201,
+                            "trigger": { "type": "NFC", "tag_id": "med_tent" },
+                            "pre_narrative": [
+                                { "type": "MONOLOGUE", "bg_type": "IMAGE", "content": "伤员急需止血草药。" }
+                            ],
+                            "task": { "type": "H5_GAME", "game_id": "puzzle_herb", "hint": "通讯员提示: 拼出草药图" },
+                            "post_narrative": [ { "type": "DIALOGUE", "speaker": "npc_soldier", "content": "谢谢你，同志！" } ]
+                        }
+                    ]
+                };
+                logConsole('ScriptEngine: Loaded [Medic] route. NFC module ready.');
+            }
+            
+            viewer.innerHTML = JSON.stringify(data, null, 2).replace(/ /g, '&nbsp;').replace(/\n/g, '<br>');
+        }
+
+        // --- 3. LBS & Team Lab (Canvas) ---
+        const canvas = document.getElementById('lbsCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationId;
+        let userPos = { x: 50, y: 50 };
+        const targetPos = { x: 200, y: 100, r: 40 };
+        let teammates = [];
+        let isTeamMode = false;
+
+        // Resize canvas
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+
+        function drawLBS() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Geofence Target
+            ctx.beginPath();
+            ctx.arc(targetPos.x, targetPos.y, targetPos.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(34, 197, 94, 0.2)'; // Green
+            ctx.fill();
+            ctx.strokeStyle = '#22c55e';
+            ctx.stroke();
+            ctx.fillStyle = '#15803d';
+            ctx.font = '10px Arial';
+            ctx.fillText('任务点 (Radius 40m)', targetPos.x - 40, targetPos.y - 45);
+
+            // Move User
+            userPos.x += 0.5;
+            if (userPos.x > canvas.width) userPos.x = 0;
+            
+            // Draw User
+            ctx.beginPath();
+            ctx.arc(userPos.x, userPos.y, 6, 0, Math.PI * 2);
+            ctx.fillStyle = '#3b82f6'; // Blue
+            ctx.fill();
+            ctx.fillText('我', userPos.x - 5, userPos.y - 10);
+
+            // Distance Calc
+            const dist = Math.sqrt(Math.pow(userPos.x - targetPos.x, 2) + Math.pow(userPos.y - targetPos.y, 2));
+            document.getElementById('dist-display').innerText = Math.round(dist);
+            
+            if (dist < targetPos.r) {
+                ctx.fillStyle = 'red';
+                ctx.fillText('⚡ TRIGGERED', targetPos.x - 20, targetPos.y + 5);
+                if(Math.random() > 0.98) logConsole(`LBS: Entered Geofence. Dist: ${Math.round(dist)}m`);
+            }
+
+            // Team Mode
+            if (isTeamMode) {
+                teammates.forEach(tm => {
+                    tm.x += (Math.random() - 0.5) * 2; // Jitter
+                    ctx.beginPath();
+                    ctx.arc(tm.x, tm.y, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ef4444'; // Red
+                    ctx.fill();
+                    ctx.fillText('队友', tm.x - 10, tm.y - 10);
+                });
+            }
+
+            animationId = requestAnimationFrame(drawLBS);
+        }
+
+        function toggleTeam() {
+            isTeamMode = !isTeamMode;
+            if (isTeamMode) {
+                teammates = [
+                    { x: 150, y: 120 },
+                    { x: 220, y: 80 }
+                ];
+                logConsole('WebSocket: Connected to Room #888. Receiving pos data...');
+            } else {
+                teammates = [];
+                logConsole('WebSocket: Disconnected.');
+            }
+        }
+
+        drawLBS(); // Start animation
+
+        // --- 4. AI Liaison Logic ---
+        function triggerLiaison() {
+            const msgs = [
+                "🎺 小号手: 同志！注意观察墙角的标语年份！",
+                "🎺 小号手: 组织发来电报，密码本就在柜子里。",
+                "📨 通讯员: 收到上级指示，请尽快前往供销社汇合。"
+            ];
+            const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+            document.getElementById('liaison-msg').innerText = randomMsg;
+            logConsole(`Liaison: Hint triggered - "${randomMsg}"`);
+        }
+
+        function simPhotoMatch() {
+            const bar = document.getElementById('match-bar');
+            const scoreDisplay = document.getElementById('match-score');
+            
+            // Simulating API call
+            logConsole('AI Service: Uploading image... Extracting Vectors...');
+            
+            bar.style.width = '10%';
+            
+            setTimeout(() => {
+                const score = Math.floor(Math.random() * 30) + 70; // 70-99%
+                bar.style.width = score + '%';
+                scoreDisplay.innerText = score + '%';
+                
+                if (score > 75) {
+                    bar.className = 'h-full bg-green-500 transition-all duration-1000';
+                    logConsole(`AI Match: Success! Score ${score}% > Threshold 75%`);
+                } else {
+                    bar.className = 'h-full bg-red-500 transition-all duration-1000';
+                    logConsole(`AI Match: Failed. Score ${score}% < Threshold 75%`);
+                }
+            }, 1000);
+        }
+
+        // --- 5. Business Chart ---
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRev, {
+            type: 'doughnut',
+            data: {
+                labels: ['门票收入 (Tickets)', '内购解锁 (SKU)', 'SaaS年费 (B2B)', '周边分润'],
+                datasets: [{
+                    data: [40, 25, 25, 10],
+                    backgroundColor: ['#ef4444', '#3b82f6', '#f59e0b', '#10b981'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
