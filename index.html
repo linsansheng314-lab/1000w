@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沉浸式红色旅游剧本杀系统架构方案</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Font Support */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Zcool+XiaoWei&display=swap');
+
+        :root {
+            --bg-paper: #FDFBF7;
+            --red-revolution: #C0392B;
+            --blue-tech: #2980B9;
+            --text-main: #2D3748;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-paper);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        .font-retro {
+            font-family: 'Zcool XiaoWei', serif;
+        }
+
+        .section-card {
+            background: white;
+            border-left: 4px solid var(--red-revolution);
+            box-shadow: var(--card-shadow);
+        }
+
+        .tech-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--blue-tech);
+        }
+
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px;
+        }
+
+        /* Flow Connector Lines using CSS */
+        .connector-line {
+            position: absolute;
+            background-color: #CBD5E0;
+            z-index: 0;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #aaa; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888; 
+        }
+        
+        /* Canvas Border */
+        canvas.simulation {
+            border: 1px dashed #cbd5e0;
+            background-color: #f8fafc;
+        }
+    </style>
+    <!-- Chosen Palette: Red Revolution & Blueprint Blue - Balancing the cultural theme with technical clarity -->
+    <!-- Application Structure Plan: 
+         1. Vision Dashboard: Immediate context setting with key metrics.
+         2. Architectural Blueprint: Interactive CSS Grid diagram. Allows users to explore the 3-tier architecture without overwhelming complexity.
+         3. Tech Lab: Three interactive demos (Canvas/Chart.js) to explain the core "hard" problems: Geo-fencing, Image Vectors, and Redis Concurrency.
+         4. Roadmap & Risk: Linear visualizations for project planning.
+         This structure moves from "Why" -> "What" -> "How" -> "When".
+    -->
+    <!-- Visualization & Content Choices:
+         - Architecture: CSS Cards instead of Mermaid for better styling control and interactivity.
+         - Geo-Logic: HTML5 Canvas simulation. It's the best way to show "distance < radius" visually.
+         - Image Matching: Chart.js Bar chart. Visualizes "Similarity Score" which is the core concept of the Vector Search, much better than just text.
+         - Concurrency: Chart.js dynamic chart. Simulates high-frequency updates to prove the "Redis" concept.
+         - NO SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm opacity-95 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-retro text-red-700 font-bold mr-2">★</span>
+                    <span class="text-xl font-bold tracking-tight text-gray-900">红色旅游架构蓝图</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#vision" class="text-gray-600 hover:text-red-700 px-3 py-2 rounded-md text-sm font-medium">项目愿景</a>
+                    <a href="#architecture" class="text-gray-600 hover:text-red-700 px-3 py-2 rounded-md text-sm font-medium">系统架构</a>
+                    <a href="#core-tech" class="text-gray-600 hover:text-red-700 px-3 py-2 rounded-md text-sm font-medium">核心技术</a>
+                    <a href="#roadmap" class="text-gray-600 hover:text-red-700 px-3 py-2 rounded-md text-sm font-medium">落地规划</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- 1. Vision & Metrics -->
+        <section id="vision" class="space-y-6">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h1 class="text-4xl font-extrabold text-gray-900 mb-4 font-retro">沉浸式红色旅游剧本杀系统</h1>
+                <p class="text-lg text-gray-600">
+                    基于微信小程序的LBS+AR实景游戏平台。通过“计划经济”主题，结合精准定位与图像指纹识别，将景区商户串联，实现寓教于乐与商业闭环。
+                </p>
+            </div>
+            
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="section-card p-6 rounded-lg text-center transform transition hover:scale-105">
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">并发承载能力</div>
+                    <div class="mt-2 text-4xl font-extrabold text-red-700">10,000+</div>
+                    <div class="mt-1 text-sm text-gray-400">Redis 高并发读写支持</div>
+                </div>
+                <div class="section-card p-6 rounded-lg text-center transform transition hover:scale-105">
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">定位精度优化</div>
+                    <div class="mt-2 text-4xl font-extrabold text-blue-700">&lt; 10米</div>
+                    <div class="mt-1 text-sm text-gray-400">Turf.js 算法平滑处理</div>
+                </div>
+                <div class="section-card p-6 rounded-lg text-center transform transition hover:scale-105">
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">线索识别方式</div>
+                    <div class="mt-2 text-4xl font-extrabold text-green-700">向量指纹</div>
+                    <div class="mt-1 text-sm text-gray-400">特征提取 + 相似度比对</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Interactive Architecture Map -->
+        <section id="architecture" class="pt-10 border-t border-gray-200">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <span class="w-2 h-8 bg-red-700 mr-3 rounded"></span>
+                    总体架构蓝图
+                </h2>
+                <p class="mt-2 text-gray-600">点击下方模块查看详细技术实现逻辑。系统采用微服务/模块化单体设计，确保高内聚低耦合。</p>
+            </div>
+
+            <!-- Architecture Grid -->
+            <div class="bg-gray-50 rounded-xl p-8 border border-gray-200 relative overflow-hidden">
+                <!-- Labels -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    
+                    <!-- Column 1: Client -->
+                    <div class="space-y-4">
+                        <h3 class="text-center font-bold text-gray-500 uppercase tracking-widest text-xs">客户端层 (Mini Program)</h3>
+                        <div onclick="showArchDetail('client-map')" class="tech-card p-4 rounded bg-white border-l-4 border-l-green-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">腾讯地图 SDK</h4>
+                            <p class="text-xs text-gray-500 mt-1">LBS定位 · 路径规划 · 导航</p>
+                        </div>
+                        <div onclick="showArchDetail('client-ui')" class="tech-card p-4 rounded bg-white border-l-4 border-l-green-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">剧情引擎</h4>
+                            <p class="text-xs text-gray-500 mt-1">JSON解析 · 状态机 · UI渲染</p>
+                        </div>
+                        <div onclick="showArchDetail('client-interact')" class="tech-card p-4 rounded bg-white border-l-4 border-l-green-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">互动模块</h4>
+                            <p class="text-xs text-gray-500 mt-1">拍照上传 · 扫码 · 答题</p>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Service -->
+                    <div class="space-y-4">
+                        <h3 class="text-center font-bold text-gray-500 uppercase tracking-widest text-xs">服务端 (Go/Java/Node)</h3>
+                        <div onclick="showArchDetail('server-gateway')" class="tech-card p-4 rounded bg-white border-l-4 border-l-blue-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">游戏网关</h4>
+                            <p class="text-xs text-gray-500 mt-1">WebSocket · 状态同步</p>
+                        </div>
+                        <div onclick="showArchDetail('server-judge')" class="tech-card p-4 rounded bg-white border-l-4 border-l-blue-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">业务逻辑层</h4>
+                            <ul class="text-xs text-gray-500 mt-1 list-disc list-inside">
+                                <li>位置判定引擎</li>
+                                <li><strong>图像匹配服务</strong></li>
+                                <li>用户中心</li>
+                            </ul>
+                        </div>
+                        <div onclick="showArchDetail('server-redis')" class="tech-card p-4 rounded bg-white border-l-4 border-l-red-500 cursor-pointer shadow-md">
+                            <h4 class="font-bold text-gray-800">Redis 缓存/排行榜</h4>
+                            <p class="text-xs text-gray-500 mt-1">ZSet 积分 · Geo 位置缓存</p>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Admin -->
+                    <div class="space-y-4">
+                        <h3 class="text-center font-bold text-gray-500 uppercase tracking-widest text-xs">管理后台 (Admin)</h3>
+                        <div onclick="showArchDetail('admin-editor')" class="tech-card p-4 rounded bg-white border-l-4 border-l-purple-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">可视剧本编辑器</h4>
+                            <p class="text-xs text-gray-500 mt-1">React + X6/ReactFlow</p>
+                        </div>
+                        <div onclick="showArchDetail('admin-assets')" class="tech-card p-4 rounded bg-white border-l-4 border-l-purple-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">线索图库管理</h4>
+                            <p class="text-xs text-gray-500 mt-1">标准图上传 · 特征预处理</p>
+                        </div>
+                        <div onclick="showArchDetail('admin-data')" class="tech-card p-4 rounded bg-white border-l-4 border-l-purple-500 cursor-pointer">
+                            <h4 class="font-bold text-gray-800">数据大屏</h4>
+                            <p class="text-xs text-gray-500 mt-1">热力图 · 实时进度</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Detail Box -->
+            <div id="arch-detail-box" class="mt-6 bg-blue-50 border border-blue-200 p-6 rounded-lg hidden">
+                <h3 id="detail-title" class="text-lg font-bold text-blue-900">模块详情</h3>
+                <p id="detail-content" class="text-blue-800 mt-2 text-sm">点击架构图中的模块查看详情。</p>
+            </div>
+        </section>
+
+        <!-- 3. Core Tech Labs -->
+        <section id="core-tech" class="pt-10 border-t border-gray-200">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <span class="w-2 h-8 bg-red-700 mr-3 rounded"></span>
+                    核心技术实现实验室
+                </h2>
+                <p class="mt-2 text-gray-600">本章节通过交互演示展示系统如何解决定位、图像识别和高并发三大难题。</p>
+            </div>
+
+            <!-- Tech 1: Image Matching -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-12">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-gray-800">A. 拍照线索比对引擎 (向量指纹)</h3>
+                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">核心交互</span>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                    <div class="p-6 border-r border-gray-100">
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-4">系统不进行简单的像素比对，而是提取特征向量。当用户拍照时，后端计算其与标准图的<strong>余弦相似度</strong>。</p>
+                            <div class="space-y-3">
+                                <button onclick="simulatePhoto('perfect')" class="w-full text-left px-4 py-3 bg-white border border-gray-300 rounded hover:bg-green-50 hover:border-green-300 transition flex items-center">
+                                    <span class="text-xl mr-3">📸</span>
+                                    <div>
+                                        <div class="font-bold text-gray-800">场景1：完美角度拍摄</div>
+                                        <div class="text-xs text-gray-500">光线充足，正对物体</div>
+                                    </div>
+                                </button>
+                                <button onclick="simulatePhoto('angle')" class="w-full text-left px-4 py-3 bg-white border border-gray-300 rounded hover:bg-yellow-50 hover:border-yellow-300 transition flex items-center">
+                                    <span class="text-xl mr-3">📐</span>
+                                    <div>
+                                        <div class="font-bold text-gray-800">场景2：角度稍微偏斜</div>
+                                        <div class="text-xs text-gray-500">侧面拍摄，有部分遮挡</div>
+                                    </div>
+                                </button>
+                                <button onclick="simulatePhoto('dark')" class="w-full text-left px-4 py-3 bg-white border border-gray-300 rounded hover:bg-red-50 hover:border-red-300 transition flex items-center">
+                                    <span class="text-xl mr-3">🌑</span>
+                                    <div>
+                                        <div class="font-bold text-gray-800">场景3：光线不足/拍摄错误</div>
+                                        <div class="text-xs text-gray-500">环境昏暗或拍摄非目标物体</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="match-result" class="mt-4 p-4 rounded bg-gray-100 text-sm font-mono hidden">
+                            Waiting for input...
+                        </div>
+                    </div>
+                    <div class="p-6 bg-gray-50 flex flex-col justify-center items-center">
+                        <div class="chart-container">
+                            <canvas id="vectorChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-gray-500 mt-2">阈值线: 0.75 (可配置)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech 2: Geo-fencing -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-12">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-gray-800">B. 地理围栏触发算法 (Geo-fencing)</h3>
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">LBS算法</span>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                    <div class="p-6">
+                        <p class="text-sm text-gray-600 mb-4">前端利用 <code>Turf.js</code> 实时计算当前坐标与任务点的直线距离。当距离小于半径且状态解锁时触发剧情。</p>
+                        
+                        <div class="flex items-center space-x-4 mb-4">
+                            <label class="text-sm font-bold text-gray-700">移动游客位置:</label>
+                            <input type="range" id="geoSlider" min="0" max="300" value="0" class="flex-grow h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        
+                        <div class="bg-gray-800 text-green-400 p-4 rounded font-mono text-xs overflow-x-auto">
+                            <div id="geo-log">
+                                > GPS Signal Acquired...<br>
+                                > Target: "供销社" (Lat: 29.5, Lng: 106.5)<br>
+                                > Waiting for movement...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-gray-50 flex justify-center items-center">
+                        <canvas id="geoCanvas" width="300" height="300" class="simulation rounded-full shadow-inner"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech 3: High Concurrency -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-gray-800">C. 万人在线积分排名 (Redis ZSet)</h3>
+                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">后端架构</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm text-gray-600 mb-4">传统数据库无法支撑万人同时更新积分。架构使用 Redis 的 <code>Sorted Set</code> (ZSet) 进行内存级排序，仅在闲时异步同步至 MySQL。</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="col-span-1 space-y-2">
+                            <button onclick="simulateTraffic()" class="w-full py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition">模拟高并发流量</button>
+                            <div class="text-xs text-gray-500 mt-2">点击按钮模拟大量用户同时提交任务，观察右侧排行榜实时变动。</div>
+                            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                                <strong>Redis指令:</strong><br>
+                                ZINCRBY leaderboard_2023 10 "user_888"<br>
+                                ZREVRANGE leaderboard_2023 0 9
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="chart-container h-48">
+                                <canvas id="redisChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Roadmap -->
+        <section id="roadmap" class="pt-10 border-t border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900 flex items-center mb-6">
+                <span class="w-2 h-8 bg-red-700 mr-3 rounded"></span>
+                开发落地路线图
+            </h2>
+            
+            <div class="relative border-l-4 border-red-200 ml-4 space-y-8">
+                <!-- Phase 1 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-3 top-0 bg-white border-4 border-red-500 w-6 h-6 rounded-full"></div>
+                    <h3 class="font-bold text-xl text-gray-900">第一阶段：MVP (最小可行性产品)</h3>
+                    <span class="text-sm text-gray-500 font-mono">周期: 1.5个月</span>
+                    <div class="mt-2 bg-white p-4 rounded shadow-sm border border-gray-200">
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>基础腾讯地图展示与GPS点位触发</li>
+                            <li>扫码打卡与图文剧情</li>
+                            <li>简单的工分统计</li>
+                            <li><strong>目标：</strong>跑通商业流程，测试景区信号盲区</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-3 top-0 bg-white border-4 border-blue-500 w-6 h-6 rounded-full"></div>
+                    <h3 class="font-bold text-xl text-gray-900">第二阶段：体验升级</h3>
+                    <span class="text-sm text-gray-500 font-mono">周期: +1个月</span>
+                    <div class="mt-2 bg-white p-4 rounded shadow-sm border border-gray-200">
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>加入<strong>拍照比对引擎</strong></li>
+                            <li>Redis 实时排行榜上线</li>
+                            <li>可视化拖拽剧本编辑器</li>
+                            <li><strong>目标：</strong>提升趣味性，应对节假日流量</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-3 top-0 bg-white border-4 border-green-500 w-6 h-6 rounded-full"></div>
+                    <h3 class="font-bold text-xl text-gray-900">第三阶段：商业化深耕</h3>
+                    <span class="text-sm text-gray-500 font-mono">周期: 长期</span>
+                    <div class="mt-2 bg-white p-4 rounded shadow-sm border border-gray-200">
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>商户端独立核销APP</li>
+                            <li>运营数据大屏 (DataV)</li>
+                            <li>多剧本切换与广告植入</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Risks -->
+        <section class="pt-10 border-t border-gray-200 pb-20">
+            <h2 class="text-2xl font-bold text-gray-900 flex items-center mb-6">
+                <span class="w-2 h-8 bg-red-700 mr-3 rounded"></span>
+                风险控制矩阵
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-red-50 p-6 rounded-lg border border-red-100">
+                    <h4 class="font-bold text-red-800 flex items-center"><span class="mr-2">⚡</span>手机电量耗尽</h4>
+                    <p class="text-sm text-gray-700 mt-2">实时定位和拍照极为耗电。</p>
+                    <div class="mt-4 text-xs font-bold text-red-600 bg-white p-2 rounded inline-block">对策：小程序"省电模式" (降低GPS频次) + 共享充电宝租赁</div>
+                </div>
+                <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-100">
+                    <h4 class="font-bold text-yellow-800 flex items-center"><span class="mr-2">📍</span>定位漂移</h4>
+                    <p class="text-sm text-gray-700 mt-2">景区信号弱导致坐标乱跳。</p>
+                    <div class="mt-4 text-xs font-bold text-yellow-600 bg-white p-2 rounded inline-block">对策：平滑算法 + 手动"我已到达"兜底 + 蓝牙Beacon</div>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
+                    <h4 class="font-bold text-blue-800 flex items-center"><span class="mr-2">📷</span>匹配失败率</h4>
+                    <p class="text-sm text-gray-700 mt-2">光线暗或角度刁钻导致识别失败。</p>
+                    <div class="mt-4 text-xs font-bold text-blue-600 bg-white p-2 rounded inline-block">对策：3次失败后降级为人工/GPS确认 + 阈值动态调整</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-retro text-2xl mb-4">第一个小目标 · 1000W+</p>
+            <p class="text-gray-400 text-sm">红色旅游剧本杀系统架构设计方案 © 2025.12.10-李佳壕</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Architecture Detail Logic ---
+        const archDetails = {
+            'client-map': { title: '腾讯地图 SDK', content: '使用腾讯地图微信小程序SDK，实现实时定位点标记、路径规划和景区导览图覆盖层。' },
+            'client-ui': { title: '剧情引擎 (State Machine)', content: '核心逻辑层。读取后端JSON配置，根据当前节点状态(NodeID)渲染不同的UI组件（对话框、任务面板）。' },
+            'client-interact': { title: '互动模块', content: '封装 wx.chooseMedia 接口进行拍照，调用 AI 接口进行答题判定，以及扫码核销逻辑。' },
+            'server-gateway': { title: '游戏网关 (Gateway)', content: '基于 Netty (Java) 或 Gorilla (Go) 的 WebSocket 服务，保持长连接，推送队友位置和实时排名。' },
+            'server-judge': { title: '业务逻辑层', content: '无状态服务。包含 GeoUtil 计算距离，以及调用图像服务计算向量相似度。' },
+            'server-redis': { title: 'Redis 集群', content: '使用 Redis Geo 存储实时位置，使用 ZSet 存储积分排名，保证毫秒级响应。' },
+            'admin-editor': { title: '可视化剧本编辑器', content: '基于 React Flow 或 AntV X6。运营人员通过拖拽节点设计剧情流程，自动生成 JSON 配置文件。' },
+            'admin-assets': { title: '线索图库管理', content: '运营上传标准图后，后台自动调用 MobileNet/ResNet 提取特征向量并存入向量库。' },
+            'admin-data': { title: '数据监控大屏', content: '实时展示景区热力图、用户滞留时长、任务完成率漏斗。' }
+        };
+
+        function showArchDetail(key) {
+            const box = document.getElementById('arch-detail-box');
+            const title = document.getElementById('detail-title');
+            const content = document.getElementById('detail-content');
+            
+            box.classList.remove('hidden');
+            box.classList.add('block', 'animate-pulse');
+            setTimeout(() => box.classList.remove('animate-pulse'), 500);
+
+            title.innerText = archDetails[key].title;
+            content.innerText = archDetails[key].content;
+        }
+
+        // --- 2. Image Vector Matching Simulation (Chart.js) ---
+        let vectorChart;
+        function initVectorChart() {
+            const ctx = document.getElementById('vectorChart').getContext('2d');
+            vectorChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['相似度得分 (0-1)'],
+                    datasets: [{
+                        label: '当前匹配度',
+                        data: [0],
+                        backgroundColor: '#E2E8F0',
+                        borderColor: '#CBD5E0',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, max: 1.0, grid: { color: '#f3f4f6' } },
+                        y: { display: false }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    xMin: 0.75,
+                                    xMax: 0.75,
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    borderWidth: 2,
+                                    label: { content: '阈值 0.75', enabled: true, position: 'top' }
+                                }
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                    responsive: true
+                }
+            });
+        }
+
+        function simulatePhoto(scenario) {
+            let score, msg, color;
+            const resultBox = document.getElementById('match-result');
+            
+            if (scenario === 'perfect') {
+                score = 0.92;
+                msg = "✅ 匹配成功! (Score: 0.92 > 0.75)";
+                color = '#48BB78'; // Green
+            } else if (scenario === 'angle') {
+                score = 0.78;
+                msg = "⚠️ 勉强通过 (Score: 0.78 > 0.75) - 提示: 注意角度";
+                color = '#ECC94B'; // Yellow
+            } else {
+                score = 0.45;
+                msg = "❌ 匹配失败 (Score: 0.45 < 0.75) - 请重拍";
+                color = '#F56565'; // Red
+            }
+
+            // Update Chart
+            vectorChart.data.datasets[0].data = [score];
+            vectorChart.data.datasets[0].backgroundColor = color;
+            vectorChart.data.datasets[0].borderColor = color;
+            vectorChart.update();
+
+            // Update Log
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = msg;
+            resultBox.style.color = scenario === 'dark' ? '#C53030' : '#2F855A';
+        }
+
+        // --- 3. Geo-fencing Simulation (Canvas) ---
+        const geoCanvas = document.getElementById('geoCanvas');
+        const geoCtx = geoCanvas.getContext('2d');
+        const geoSlider = document.getElementById('geoSlider');
+        const geoLog = document.getElementById('geo-log');
+
+        // Config
+        const centerX = 150;
+        const centerY = 150;
+        const radius = 60; // Trigger radius
+        
+        function drawGeoSim() {
+            const userOffset = parseInt(geoSlider.value);
+            // User moves from (50, 50) towards (150, 150)
+            const userX = 50 + (userOffset / 300) * 100;
+            const userY = 50 + (userOffset / 300) * 100;
+
+            // Clear
+            geoCtx.clearRect(0, 0, 300, 300);
+
+            // Draw Zone (Target)
+            geoCtx.beginPath();
+            geoCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            geoCtx.fillStyle = 'rgba(66, 153, 225, 0.2)';
+            geoCtx.fill();
+            geoCtx.strokeStyle = '#4299E1';
+            geoCtx.lineWidth = 2;
+            geoCtx.stroke();
+            geoCtx.fillStyle = '#2B6CB0';
+            geoCtx.font = "12px Arial";
+            geoCtx.fillText("任务点: 供销社", centerX - 35, centerY - 10);
+            geoCtx.fillText(`半径: ${radius}m`, centerX - 25, centerY + 20);
+
+            // Calculate Distance
+            const dist = Math.sqrt(Math.pow(userX - centerX, 2) + Math.pow(userY - centerY, 2));
+            const isInside = dist < radius;
+
+            // Draw User
+            geoCtx.beginPath();
+            geoCtx.arc(userX, userY, 6, 0, 2 * Math.PI);
+            geoCtx.fillStyle = isInside ? '#48BB78' : '#F56565'; // Green if inside, Red if outside
+            geoCtx.fill();
+            geoCtx.stroke();
+
+            // Draw Line
+            geoCtx.beginPath();
+            geoCtx.moveTo(userX, userY);
+            geoCtx.lineTo(centerX, centerY);
+            geoCtx.strokeStyle = '#CBD5E0';
+            geoCtx.setLineDash([5, 5]);
+            geoCtx.stroke();
+            geoCtx.setLineDash([]);
+
+            // Update Log
+            if (isInside) {
+                geoLog.innerHTML = `> Distance: ${Math.round(dist)}m < ${radius}m<br><span style="color:#68D391">> TRIGGER EVENT: "Show Story Dialog"</span>`;
+            } else {
+                geoLog.innerHTML = `> Distance: ${Math.round(dist)}m > ${radius}m<br>> Status: Walking...`;
+            }
+        }
+
+        geoSlider.addEventListener('input', drawGeoSim);
+
+
+        // --- 4. High Concurrency Redis Simulation (Chart.js) ---
+        let redisChart;
+        function initRedisChart() {
+            const ctx = document.getElementById('redisChart').getContext('2d');
+            redisChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['User_A', 'User_B', 'User_C', 'User_D', 'User_E'],
+                    datasets: [{
+                        label: '实时工分 (Redis ZSet)',
+                        data: [120, 95, 88, 60, 45],
+                        backgroundColor: 'rgba(192, 57, 43, 0.6)',
+                        borderColor: 'rgba(192, 57, 43, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true }
+                    },
+                    animation: {
+                        duration: 500
+                    },
+                    maintainAspectRatio: false,
+                    responsive: true
+                }
+            });
+        }
+
+        function simulateTraffic() {
+            let iteration = 0;
+            const interval = setInterval(() => {
+                // Randomly update scores
+                const newData = redisChart.data.datasets[0].data.map(score => score + Math.floor(Math.random() * 20));
+                
+                // Sort (Simulate Redis ZREVRANGE)
+                // Note: Chart.js renders by label index, simplified here for demo
+                
+                redisChart.data.datasets[0].data = newData;
+                redisChart.update();
+
+                iteration++;
+                if (iteration > 5) clearInterval(interval);
+            }, 800);
+        }
+
+
+        // --- Init ---
+        window.onload = function() {
+            initVectorChart();
+            drawGeoSim(); // Init canvas
+            initRedisChart();
+        };
+
+    </script>
+</body>
+</html>
